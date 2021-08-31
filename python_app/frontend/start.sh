@@ -8,6 +8,9 @@ REGION=`curl -s -H "X-aws-ec2-metadata-token: $TOKEN"  http://169.254.169.254/la
 echo $REGION && echo ''
 
 
+HERE=$(dirname $(realpath -s $0))
+echo $HERE
+
 #export region="us-east-1"
 
 #cat configs.json.tpl | sed -i "s/REGION_CODE/'$region'/g" > configs.json

@@ -1,6 +1,12 @@
 #!/bin/sh
-export region=`curl 169.254.169.254/latest/meta-data/hostname | cut -f 2 -d '.'`
-#export region="us-east-1"
+echo 'get temporary token for metedata'
+TOKEN=`curl -s -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600"`
+echo ''
+
+echo '>> Get Region ....'
+REGION=`curl -s -H "X-aws-ec2-metadata-token: $TOKEN"  http://169.254.169.254/latest/dynamic/instance-identity/document/ | grep region | cut -d \" -f 4`
+echo $REGION && echo ''
+
 
 #cat configs.json.tpl | sed -i "s/REGION_CODE/'$region'/g" > configs.json
 cat configs.json.tpl | sed "s/REGION_CODE/'$region'/g" > configs.json

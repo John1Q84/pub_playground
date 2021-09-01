@@ -52,6 +52,10 @@ get_tags() {
 git_init(){
     yum install git -y
     cd $HOME_DIR
+    if [ -d $HOME_DIR/builders_pkg ] ; then
+        echo 'remove old git info'
+        rm -rf $HOME_DIR/builders_pkg
+    fi
     git init builders_pkg
     cd builders_pkg
     git config core.sparseCheckout true

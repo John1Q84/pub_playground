@@ -26,8 +26,8 @@ def service():
         'index.html',
         title = 'Dogs are cool',
         #backend_url = 'http://localhost:8080',
-        backend_url = 'http://service.mydomain.int',
-        image_file='images/' + img_select(const)
+        image_url = 'https://raw.githubusercontent.com/John1Q84/pub_playground/main',
+        image_file='images/dogs/' + img_select(const)
     )
 
 

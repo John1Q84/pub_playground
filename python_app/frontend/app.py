@@ -10,8 +10,8 @@ with open('configs.json', 'r') as f:    # config file loading
 
 app = Flask (__name__)
 api = Api(app)
-#SITE_NAME = 'http://service.mydomain.int/'
-SITE_NAME = 'http://localhost:8080/'   # for local test
+SITE_NAME = 'http://service.mydomain.int/'
+#SITE_NAME = 'http://localhost:8080/'   # for local test
 
 # @app.route('/demo')
 # def hello_world():

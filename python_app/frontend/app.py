@@ -10,12 +10,14 @@ with open('configs.json', 'r') as f:    # config file loading
 
 app = Flask (__name__)
 api = Api(app)
-SITE_NAME = 'http://service.mydomain.int/'
-
+#SITE_NAME = 'http://service.mydomain.int/'
+SITE_NAME = 'http://localhost:8080/'   # for local test
 
 # @app.route('/demo')
 # def hello_world():
 #    return 'Hello World!'
+
+@app.route('/', defaults={'path': '/index'})
 
 @app.route('/index')
 def index():
@@ -33,17 +35,11 @@ def index():
 
 @app.route('/<path:path>',methods=['GET'])
 def proxy(path):
+    global SITE_NAME
     if request.method=='GET':
         resp = requests.get(f'{SITE_NAME}{path}')
-        # excluded_headers = ['content-encoding', 'content-length', 'transfer-encoding', 'connection']
-        # headers = [(name, value) for (name, value) in     resp.raw.headers.items() if name.lower() not in excluded_headers]
         response = Response(resp.text, resp.status_code)
     return response
-
-# @api.route('/hello')
-# class InfoReturn(Resource):
-#     def get(self):
-#         return {"hello": "HelloWorld!", "version": "Blue", "region": "localhost"}
 
 
 if __name__ == "__main__":

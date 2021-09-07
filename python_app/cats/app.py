@@ -11,32 +11,25 @@ with open('configs.json', 'r') as f:    # config file loading
 
 app = Flask (__name__)
 api = Api(app)
-const = ['1', '2', '3', '4', '5']
-extend = ".jpeg"
+const = ['1.jpeg', '2.jpeg', '3.jpeg', '4.jpeg', '5.jpeg']
 
 # @app.route('/demo')
 # def hello_world():
 #    return 'Hello World!'
 def img_select(const):
-    return random.choice(const) + extend
+    return random.choice(const) 
 
 
 @app.route('/service')
-def index():
+def servoce():
     return render_template(
         'index.html',
         title = 'I love cats',
+        # backend_url = 'http://localhost:8080',
+        backend_url = 'http://service.mydomain.int',
         image_file="images/" + img_select(const)
     )
 
-# @app.route('/service')
-# def google():
-#     return redirect("http://service.mydomain.int/service")
-
-# @api.route('/hello')
-# class InfoReturn(Resource):
-#     def get(self):
-#         return {"hello": "HelloWorld!", "version": "Blue", "region": "localhost"}
 
 
 if __name__ == "__main__":

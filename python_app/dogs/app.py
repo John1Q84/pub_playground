@@ -11,8 +11,7 @@ with open('configs.json', 'r') as f:    # config file loading
 
 app = Flask (__name__)
 api = Api(app)
-#const = ['_1.jpeg','_2.jpeg','_3.jpeg','_4.jpeg','_5.jpeg']
-const = ['_2.jpeg','_4.jpeg']
+const = ['_1.jpeg','_2.jpeg','_3.jpeg','_4.jpeg','_5.jpeg']
 # @app.route('/demo')
 # def hello_world():
 #    return 'Hello World!'

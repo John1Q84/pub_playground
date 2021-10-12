@@ -64,6 +64,17 @@ git_init(){
     git pull origin main
 }
 
+config_set(){
+   if [ ! -d $HOME_DIR/builders_pkg/python_app/$service_name ] ; then
+        echo "git init failed"
+        exit 1
+    fi
+
+    cd $HOME_DIR/builders_pkg/python_app/$service_name
+    cat configs.json.tpl | sed "s/REGION_CODE/$REGION/g" > configs.json
+
+}
+
 make_service(){
     if [ ! -d $HOME_DIR/builders_pkg/python_app/$service_name ] ; then
         echo "git init failed"

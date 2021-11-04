@@ -51,6 +51,7 @@ get_tags() {
 }
 
 git_init(){
+    echo '>> git init step'
     yum install git -y
     cd $HOME_DIR
     if [ -d $HOME_DIR/builders_pkg ] ; then
@@ -63,17 +64,22 @@ git_init(){
     git remote add -f origin $REPO
     echo "python_app/$service_name" > .git/info/sparse-checkout
     git pull origin main
+    echo '>> end git init'
 }
 
 config_set(){
+   echo '>>config set step'
    if [ ! -d $HOME_DIR/builders_pkg/python_app/$service_name ] ; then
         echo "git init failed"
         exit 1
     fi
 
     cd $HOME_DIR/builders_pkg/python_app/$service_name
+    echo '>>working directory is,' && echo `pwd`
     cat configs.json.tpl | sed "s/REGION_CODE/$REGION/g" > configs.json
-
+    echo '>> configs.json file ....'
+    cat configs.json
+    echo 'end config set step'
 }
 
 make_service(){

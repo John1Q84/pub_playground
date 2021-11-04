@@ -12,7 +12,7 @@ HERE=$(dirname $(realpath -s $0))
 echo $HERE
 
 #cat configs.json.tpl | sed -i "s/REGION_CODE/'$region'/g" > configs.json
-cat configs.json.tpl | sed "s/REGION_CODE/$region/g" > configs.json
+cat configs.json.tpl | sed "s/REGION_CODE/$REGION/g" > configs.json
 
 source "$HERE/v_demo_app/bin/activate"
 pip3 install -r requirements.txt

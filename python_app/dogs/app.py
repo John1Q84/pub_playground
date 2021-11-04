@@ -30,6 +30,26 @@ def service():
         image_file='images/dogs/' + img_select(const)
     )
 
+@app.route('/kr/service')
+def kr_service():
+    return render_template(
+        'index.html',
+        title = '<KR>Dogs are cool',
+        #backend_url = 'http://localhost:8080',
+        image_url = 'https://raw.githubusercontent.com/John1Q84/pub_playground/main',
+        image_file='images/dogs/' + img_select(const)
+    )
+
+@app.route('/us/service')
+def us_service():
+    return render_template(
+        'index.html',
+        title = '<US> Dogs are cool',
+        #backend_url = 'http://localhost:8080',
+        image_url = 'https://raw.githubusercontent.com/John1Q84/pub_playground/main',
+        image_file='images/dogs/' + img_select(const)
+    )
+
 
 if __name__ == "__main__":
     app.run(debug=False, host='0.0.0.0', port=80)

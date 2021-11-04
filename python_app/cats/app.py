@@ -31,6 +31,27 @@ def servoce():
     )
 
 
+@app.route('/kr/service')
+def kr_servoce():
+    return render_template(
+        'index.html',
+        title = '<KR> I love cats',
+        # backend_url = 'http://localhost:8080',
+        image_url = 'https://raw.githubusercontent.com/John1Q84/pub_playground/main',
+        image_file='images/cats/' + img_select(const)
+    )
+
+@app.route('/us/service')
+def us_servoce():
+    return render_template(
+        'index.html',
+        title = '<US> I love cats',
+        # backend_url = 'http://localhost:8080',
+        image_url = 'https://raw.githubusercontent.com/John1Q84/pub_playground/main',
+        image_file='images/cats/' + img_select(const)
+    )
+
+
 
 if __name__ == "__main__":
     app.run(debug=False, host='0.0.0.0', port=80)

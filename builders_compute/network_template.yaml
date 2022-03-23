@@ -868,6 +868,40 @@ Resources:
           PropagateAtLaunch: true
 
 
+  R53HostedZone:
+    Type: AWS::Route53::HostedZone
+    DependsOn: VPC
+    Properties:
+      HostedZoneConfig:
+        Comment: 'Builders internal hosted zone'
+      Name: 'mydomain.int'
+      VPCs:
+        - VPCId: !Ref VPC
+          VPCRegion: ap-northeast-2
+
+  ServiceDNSRecord:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      HostedZoneId: !Ref R53HostedZone
+      Comment: Alias record set for backend ALB
+      RecordSets:
+      - Name: service.mydomain.int
+        Type: A
+        SetIdentifier: BkCats alb
+        Weight: '0'
+        AliasTarget:
+          HostedZoneId: !GetAtt BkCatALB.CanonicalHostedZoneID 
+          DNSName:  !GetAtt BkCatALB.DNSName 
+      - Name: service.mydomain.int
+        Type: A
+        SetIdentifier: BkDogs alb 
+        Weight: '0'
+        AliasTarget:
+          HostedZoneId: !GetAtt BkDogALB.CanonicalHostedZoneID 
+          DNSName:  !GetAtt BkDogALB.DNSName 
+
+
+
 #ami-id : ami-033a6a056910d1137
   # ECSInstanceSG:
   #   Type: "AWS::EC2::SecurityGroup"

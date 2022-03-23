@@ -20,7 +20,7 @@ REPO='https://github.com/John1Q84/pub_playground.git'
 
 main() {
     if [ $(id -u) -ne 0 ]; then
-        echo "Run script as rool!" >&2
+        echo "Run script as root!" >&2
         exit 1
     fi
 

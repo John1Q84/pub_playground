@@ -1,0 +1,2 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'AWS Builders Compute 200 Lv HoL Prerequisite - LT CloudFormation Template'

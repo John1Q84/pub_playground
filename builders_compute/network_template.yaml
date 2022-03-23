@@ -82,10 +82,10 @@ Resources:
   PrivateSubnet1:
     DependsOn: AttachGateway
     Properties:
-      AvailabilityZone:
-        Fn::Select:
-        - '0'
-        - {'Fn::GetAZs': ''}
+      AvailabilityZone: 'ap-northeast-2a'   ## using AZ a and c only, because, AZ b does not support t type instance
+        # Fn::Select:
+        # - '0'
+        # - {'Fn::GetAZs': ''}
       CidrBlock:
         Fn::FindInMap: [CidrMappings, private-subnet-1, CIDR]
       Tags:
@@ -101,10 +101,10 @@ Resources:
   PrivateSubnet2:
     DependsOn: AttachGateway
     Properties:
-      AvailabilityZone:
-        Fn::Select:
-        - '1'
-        - {'Fn::GetAZs': ''}
+      AvailabilityZone: 'ap-northeast-2c'
+        # Fn::Select:
+        # - '1'
+        # - {'Fn::GetAZs': ''}
       CidrBlock:
         Fn::FindInMap: [CidrMappings, private-subnet-2, CIDR]
       Tags:
@@ -134,10 +134,10 @@ Resources:
   PublicSubnet1:
     DependsOn: AttachGateway
     Properties:
-      AvailabilityZone:
-        Fn::Select:
-        - '0'
-        - {'Fn::GetAZs': ''}
+      AvailabilityZone: 'ap-northeast-2a' 
+        # Fn::Select:
+        # - '0'
+        # - {'Fn::GetAZs': ''}
       CidrBlock:
         Fn::FindInMap: [CidrMappings, public-subnet-1, CIDR]
       Tags:
@@ -153,10 +153,10 @@ Resources:
   PublicSubnet2:
     DependsOn: AttachGateway
     Properties:
-      AvailabilityZone:
-        Fn::Select:
-        - '1'
-        - {'Fn::GetAZs': ''}
+      AvailabilityZone: 'ap-northeast-2c'
+        # Fn::Select:
+        # - '1'
+        # - {'Fn::GetAZs': ''}
       CidrBlock:
         Fn::FindInMap: [CidrMappings, public-subnet-2, CIDR]
       Tags:
@@ -247,7 +247,187 @@ Resources:
         FromPort: '80'
         ToPort: '80'
         
+  EC2InstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - ec2.amazonaws.com
+          Action: sts:AssumeRole
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess
+      Path: "/"
 
+  EC2InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: "/"
+      Roles:
+      - !Ref EC2InstanceRole
+      InstanceProfileName: builders-ec2-profile-cf
+  
+  FrontendALB:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    DependsOn: PublicLBSecurityGroup
+    Properties:
+      Name: Builders-FrontendALB
+      Scheme: Internet-facing
+      SecurityGroups:
+      - !Ref PublicLBSecurityGroup 
+      Subnets:
+      - !Ref PublicSubnet1
+      - !Ref PublicSubnet2
+
+  FrontendALBTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      HealthCheckIntervalSeconds: 30
+      HealthCheckPath: /
+      HealthCheckPort: 80
+      HealthCheckProtocol: HTTP
+      HealthCheckTimeoutSeconds: 5
+      HealthyThresholdCount: 2
+      Matcher:
+        HttpCode: 200
+      Name: FrontendALBTargetGroup
+      Port: 80
+      Protocol: HTTP
+      UnhealthyThresholdCount: 2
+      VpcId: !Ref VPC
+  
+  FrontendALBListner:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    DependsOn:
+    - FrontendALB 
+    - FrontendALBTargetGroup
+    Properties:
+      DefaultActions:
+      - Type: forward
+        TargetGroupArn: !Ref FrontendALBTargetGroup 
+      LoadBalancerArn: !Ref FrontendALB
+      Port: 80
+      Protocol: HTTP 
+
+  BkCatALB:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    DependsOn: InternalLBSecurityGroup 
+    Properties:
+      Name: Builders-CatALB
+      Scheme: internal
+      SecurityGroups:
+      - !Ref InternalLBSecurityGroup 
+      Subnets:
+      - !Ref PrivateSubnet1 
+      - !Ref PrivateSubnet2
+
+  BkCatALBTargetGroup:
+    Type:
+    Properties:
+      HealthCheckIntervalSeconds: 30
+      HealthCheckPath: /
+      HealthCheckPort: 80
+      HealthCheckProtocol: HTTP
+      HealthCheckTimeoutSeconds: 5
+      HealthyThresholdCount: 2
+      Matcher:
+        HttpCode: 200
+      Name: BkCatALBTargetGroup
+      Port: 80
+      Protocol: HTTP
+      UnhealthyThresholdCount: 2
+      VpcId: !Ref VPC
+
+  BkCatALBListner:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    DependsOn:
+    - BkCatALB 
+    - BkCatALBTargetGroup
+    Properties:
+      DefaultActions:
+      - Type: forward
+        TargetGroupArn: !Ref BkCatALBTargetGroup 
+      LoadBalancerArn: !Ref BkCatALB
+      Port: 80
+      Protocol: HTTP 
+
+  BkDogALB:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    DependsOn: InternalLBSecurityGroup 
+    Properties:
+      Name: Builders-DogALB
+      Scheme: internal
+      SecurityGroups:
+      - !Ref InternalLBSecurityGroup 
+      Subnets:
+      - !Ref PrivateSubnet1 
+      - !Ref PrivateSubnet2
+
+  BkDogALBTargetGroup:
+    Type:
+    Properties:
+      HealthCheckIntervalSeconds: 30
+      HealthCheckPath: /
+      HealthCheckPort: 80
+      HealthCheckProtocol: HTTP
+      HealthCheckTimeoutSeconds: 5
+      HealthyThresholdCount: 2
+      Matcher:
+        HttpCode: 200
+      Name: BkDogALBTargetGroup
+      Port: 80
+      Protocol: HTTP
+      UnhealthyThresholdCount: 2
+      VpcId: !Ref VPC
+
+  BkDogALBListner:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    DependsOn:
+    - BkDogALB 
+    - BkDogALBTargetGroup
+    Properties:
+      DefaultActions:
+      - Type: forward
+        TargetGroupArn: !Ref BkDogALBTargetGroup 
+      LoadBalancerArn: !Ref BkDogALB
+      Port: 80
+      Protocol: HTTP 
+  
+  FrontendLaunchTemplate:
+    Type: 
+    DependsOn:
+    Properties:
+      LaunchTemplateName:
+      LaunchTemplateData:
+        BlockDeviceMappings:
+        - DeviceName: "/dev/xvda"
+          Ebs:
+            DeleteOnTermination: 'true'
+            VolumeSize: 8
+            VolumeType: gp2
+        IamInstanceProfile: 
+          Name: !Ref 
+        ImageId: 
+        InstanceType: t3.micro
+        KeyName: 
+        SecurityGroupIds:
+        - !Ref 
+        TagSpecifications:
+        - ResourceType: instance
+          Tags:
+          - Key: Name
+            Value: 
+        UserData:
+          Fn::Base64: !Sub |
+            #!/bin/bash
+
+
+
+
+#ami-id : ami-033a6a056910d1137
   # ECSInstanceSG:
   #   Type: "AWS::EC2::SecurityGroup"
   #   Properties:

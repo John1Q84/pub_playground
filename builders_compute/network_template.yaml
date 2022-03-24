@@ -888,7 +888,7 @@ Resources:
       - Name: service.mydomain.int
         Type: A
         SetIdentifier: BkCats alb
-        Weight: '0'
+        Weight: '100'
         AliasTarget:
           HostedZoneId: !GetAtt BkCatALB.CanonicalHostedZoneID 
           DNSName:  !GetAtt BkCatALB.DNSName 

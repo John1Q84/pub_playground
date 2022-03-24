@@ -410,7 +410,7 @@ Resources:
             VolumeType: gp3
         IamInstanceProfile: 
           Name: !Ref EC2InstanceProfile 
-        ImageId: ami-033a6a056910d1137 
+        ImageId: ami-033a6a056910d1137  # Amazon Linux2, Kernel 5, HVM, x86-64, latest at 2022 Mar.
         InstanceType: t3.micro
         SecurityGroupIds:
         - !Ref FrontEndSecurityGroup 
@@ -902,70 +902,4 @@ Resources:
 
 
 
-#ami-id : ami-033a6a056910d1137
-  # ECSInstanceSG:
-  #   Type: "AWS::EC2::SecurityGroup"
-  #   Properties:
-  #     GroupDescription: Enable access to container instances, from the load balancer only
-  #     VpcId: {Ref: VPC}
-  #     SecurityGroupIngress:
-  #     - SourceSecurityGroupId: {Ref: ALBSG} 
-  #       IpProtocol: tcp
-  #       FromPort: '0'
-  #       ToPort: '65535'
 
-  # WorkstationRole:
-  #   Type: AWS::IAM::Role
-  #   Properties:
-  #     Path: "/"
-  #     ManagedPolicyArns:
-  #       - "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess"
-  #       - "arn:aws:iam::aws:policy/AmazonS3FullAccess"
-  #     AssumeRolePolicyDocument:
-  #       Version: '2012-10-17'
-  #       Statement:
-  #       - Effect: Allow
-  #         Principal:
-  #           Service:
-  #           - ec2.amazonaws.com
-  #         Action:
-  #           - sts:AssumeRole
-
-  # WorkstationProfile: 
-  #        Type: AWS::IAM::InstanceProfile
-  #        Properties: 
-  #           Path: "/"
-  #           Roles: 
-  #           - Ref: "WorkstationRole"
-  # cloud9Environment:
-  #   Properties:
-  #     Name : ecsworkshop
-  #     SubnetId: {Ref: PublicSubnet1} 
-  #     # OwnerArn :  !Sub arn:aws:sts::${AWS::AccountId}:assumed-role/TeamRole/MasterKey
-  #     Description: Use this to work with ECS cats & dogs workshop
-  #     InstanceType: t3.large
-  #     Repositories:
-  #       - RepositoryUrl: https://github.com/jimini55/catsdogs-cloud9
-  #         PathComponent: ecsworkshop
-  #   Type: AWS::Cloud9::EnvironmentEC2            
-  # Workstation:
-  #   Type: AWS::EC2::Instance
-  #   Properties:
-  #     DisableApiTermination: 'false'
-  #     InstanceInitiatedShutdownBehavior: stop
-  #     ImageId: ami-0bfec29e923df9531
-  #     InstanceType: t2.micro
-  #     Monitoring: 'false'
-  #     KeyName: {Ref: myKeyPair}
-  #     IamInstanceProfile: {Ref: "WorkstationProfile"}
-  #     Tags:
-  #       - Key: Name
-  #         Value: Workstation
-  #     NetworkInterfaces:
-  #       - AssociatePublicIpAddress: 'true'
-  #         DeleteOnTermination: 'true'
-  #         Description: 'Primary network interface'
-  #         DeviceIndex: 0
-  #         SubnetId: {Ref: PublicSubnet1}  
-  #         GroupSet: 
-  #           - Ref: "WorkstationSG"

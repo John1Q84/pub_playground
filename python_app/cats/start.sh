@@ -15,6 +15,16 @@ echo $HERE
 cat configs.json.tpl | sed "s/REGION_CODE/$REGION/g" > configs.json
 
 source "$HERE/v_demo_app/bin/activate"
+pip3 install --upgrade pip
 pip3 install -r requirements.txt
+
+# install python opentelemetry sdk and other libraries for tradcing
+pip3 install opentelemetry-api
+pip3 install opentelemetry-sdk
+pip3 install opentelemetry-distro
+pip3 install opentelemetry-exporter-otlp-proto-grpc
+pip3 install opentelemetry-sdk-extension-aws
+pip3 install opentelemetry-propagator-aws-xray
+
 
 python3 app.py

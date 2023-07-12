@@ -6,6 +6,12 @@ from flask_restx import Api, Resource
 import json
 import random
 
+# OTLP tracing
+from opentelemetry import trace
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
+from opentelemetry.sdk.resources import SERVICE_NAME, Resource, get_aggregated_resources
+
 with open('configs.json', 'r') as f:    # config file loading
     configs = json.load(f)
 

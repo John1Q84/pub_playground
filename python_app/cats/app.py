@@ -6,32 +6,65 @@ from flask_restx import Api, Resource
 import json
 import random
 
-## OTLP tracing
-#from opentelemetry import trace
-#from opentelemetry.sdk.trace import TracerProvider
-#from opentelemetry.sdk.trace.export import (
-#    BatchSpanProcessor,
-#    ConsoleSpanExporter,
-#)
-#
-#from opentelemetry.sdk.resources import SERVICE_NAME, Resource, get_aggregated_resources
-#
-## Exporter
-#from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
-#
-## Propagation
-#from opentelemetry.propagate import set_global_textmap
-#from opentelemetry.propagators.aws import AwsXRayPropagator
-#
-## AWS X-Ray ID Generator
-#from opentelemetry.sdk.extension.aws.trace import AwsXRayIdGenerator
+# OTLP tracing
+from opentelemetry import trace
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import (
+    BatchSpanProcessor,
+    ConsoleSpanExporter,
+)
+
+from opentelemetry.sdk.resources import SERVICE_NAME, Resource, get_aggregated_resources
+
+# Exporter
+from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+
+# Propagation
+from opentelemetry.propagate import set_global_textmap
+from opentelemetry.propagators.aws import AwsXRayPropagator
+
+# AWS X-Ray ID Generator
+from opentelemetry.sdk.extension.aws.trace import AwsXRayIdGenerator
+
+# Resource detector
+from opentelemetry.sdk.extension.aws.resource.ec2 import AwsEc2ResourceDetector
+
+# Setup AWS X-ray propagator
+set_global_textmap(AwsXRayPropagator())
+
+# Setup AWS EC2 resource detector
+resource = get_aggregated_resources (
+    [
+        AwsEc2ResourceDetector(),
+    ]
+)
+
+# Instrumentation
+from opentelemetry.instrumentation.botocore import BotocoreInstrumentor
+from opentelemetry.instrumentation.flask import FlaskInstrumentor
 
 
+# Instrumentation
+BotocoreInstrumentor().instrument()
+
+
+
+# Setup tracer provider with the X-Ray ID generator
+tracer_provider = TracerProvider(resource=resource, id_generator=AwsXRayIdGenerator())
+processor = BatchSpanProcessor(OTLPSpanExporter())
+provider.add_span_processor(processor)
+
+# Sets the global default tracer provider
+trace.set_tracer_provider(tracer_provider)
+
+# Creates a tracer from the global tracer provider
+tracer = trace.get_tracer(__name__)
 
 with open('configs.json', 'r') as f:    # config file loading
     configs = json.load(f)
 
 app = Flask (__name__)
+FlaskInstrumentor().instrument_app(app)
 api = Api(app)
 const = ['1.jpeg', '2.jpeg', '3.jpeg', '4.jpeg', '5.jpeg']
 

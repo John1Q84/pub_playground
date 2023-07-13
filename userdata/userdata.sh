@@ -1,3 +1,22 @@
+Content-Type: multipart/mixed; boundary="//"
+MIME-Version: 1.0
+
+--//
+Content-Type: text/cloud-config; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="cloud-config.txt"
+
+#cloud-config
+cloud_final_modules:
+- [scripts-user, always]
+
+--//
+Content-Type: text/x-shellscript; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="userdata.txt"
+
 #!/bin/bash
 set -e
 
@@ -34,7 +53,7 @@ main() {
     while true; do
         get_tags &&
         git_init &&
-	config_set &&
+	    config_set &&
         make_service &&
         break
     done
@@ -49,6 +68,14 @@ get_tags() {
     export service_name=`aws ec2 describe-instances --instance-id $INSTANCE_ID --region $REGION --query "$query" --out text`
     echo 'Tag name "service_name" is,' && echo "$service_name"
 }
+
+# trace_init(){
+#     echo '>> init tracinge tools step'
+#     yum install go -y
+#     cd $HOME_DIR
+#     git clone https://github.com/aws-observability/aws-otel-collector.git ./adot
+#     cd adot && make package-rpm
+# }
 
 git_init(){
     echo '>> git init step'

@@ -26,6 +26,9 @@ pip3 install opentelemetry-exporter-otlp-proto-grpc
 pip3 install opentelemetry-sdk-extension-aws
 pip3 install opentelemetry-propagator-aws-xray
 pip3 install opentelemetry-distro opentelemetry-exporter-otlp
+pip3 install opentelemetry-instrumentation-botocore
+pip3 install opentelemetry-instrumentation-flask
+
 
 opentelemetry-bootstrap -a install
 

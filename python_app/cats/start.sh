@@ -25,6 +25,16 @@ pip3 install opentelemetry-distro
 pip3 install opentelemetry-exporter-otlp-proto-grpc
 pip3 install opentelemetry-sdk-extension-aws
 pip3 install opentelemetry-propagator-aws-xray
+pip3 install opentelemetry-distro opentelemetry-exporter-otlp
+
+opentelemetry-bootstrap -a install
+
+opentelemetry-instrument \
+    --traces_exporter console,otlp \
+    --metrics_exporter console \
+    --service_name myServiceCats \
+    --exporter_otlp_endpoint 0.0.0.0:4317 \
+    python3 app.py
 
 
-python3 app.py
+#python3 app.py

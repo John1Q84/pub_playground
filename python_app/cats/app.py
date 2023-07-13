@@ -6,11 +6,27 @@ from flask_restx import Api, Resource
 import json
 import random
 
-# OTLP tracing
-from opentelemetry import trace
-from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry.sdk.trace.export import BatchSpanProcessor
-from opentelemetry.sdk.resources import SERVICE_NAME, Resource, get_aggregated_resources
+## OTLP tracing
+#from opentelemetry import trace
+#from opentelemetry.sdk.trace import TracerProvider
+#from opentelemetry.sdk.trace.export import (
+#    BatchSpanProcessor,
+#    ConsoleSpanExporter,
+#)
+#
+#from opentelemetry.sdk.resources import SERVICE_NAME, Resource, get_aggregated_resources
+#
+## Exporter
+#from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+#
+## Propagation
+#from opentelemetry.propagate import set_global_textmap
+#from opentelemetry.propagators.aws import AwsXRayPropagator
+#
+## AWS X-Ray ID Generator
+#from opentelemetry.sdk.extension.aws.trace import AwsXRayIdGenerator
+
+
 
 with open('configs.json', 'r') as f:    # config file loading
     configs = json.load(f)

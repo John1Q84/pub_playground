@@ -53,8 +53,9 @@ main() {
     while true; do
         get_tags &&
         git_init &&
-	    config_set &&
+        config_set &&
         make_service &&
+        install_adot_collector &&
         break
     done
     echo 'initializing complete !!'
@@ -69,11 +70,11 @@ get_tags() {
     echo 'Tag name "service_name" is,' && echo "$service_name"
 }
 
-install_otlp_collector(){
-    sudo yum -y install wget systemctl
-    wget https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v0.81.0/otelcol_0.81.0_linux_386.rpm
-    sudo rpm -ivh otelcol_0.81.0_linux_386.rpm
-    sudo systemctl restart otelcol --config=$HOME_DIR/builders_pkg/python_app/cats/adot/adot-config.conf
+install_adot_collector(){
+    echo '>> install_adot_collector step'
+    wget https://aws-otel-collector.s3.amazonaws.com/amazon_linux/amd64/latest/aws-otel-collector.rpm && \
+    rpm -Uvh  ./aws-otel-collector.rpm
+    /opt/aws/aws-otel-collector/bin/aws-otel-collector-ctl -c $HOME_DIR/builders_pkg/python_app/cats/adot/adot-config.yaml -a start
 }
 
 
@@ -91,7 +92,7 @@ git_init(){
     git config core.sparseCheckout true
     git remote add -f origin $REPO
     echo "python_app/$service_name" > .git/info/sparse-checkout
-    git pull origin main
+    git pull origin tracing
     echo '>> end git init'
 }
 

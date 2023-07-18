@@ -19,24 +19,28 @@ pip3 install --upgrade pip
 pip3 install -r requirements.txt
 
 # install python opentelemetry sdk and other libraries for tradcing
-pip3 install opentelemetry-api
-pip3 install opentelemetry-sdk
-pip3 install opentelemetry-distro
-pip3 install opentelemetry-exporter-otlp-proto-grpc
-pip3 install opentelemetry-sdk-extension-aws
-pip3 install opentelemetry-propagator-aws-xray
-pip3 install opentelemetry-distro opentelemetry-exporter-otlp
-pip3 install opentelemetry-instrumentation-botocore
-pip3 install opentelemetry-instrumentation-flask
+# pip3 install opentelemetry-api
+# pip3 install opentelemetry-sdk
+# pip3 install opentelemetry-distro
+# pip3 install opentelemetry-exporter-otlp-proto-grpc
+# pip3 install opentelemetry-sdk-extension-aws
+# pip3 install opentelemetry-propagator-aws-xray
+# pip3 install opentelemetry-distro opentelemetry-exporter-otlp
+# pip3 install opentelemetry-instrumentation-botocore
+# pip3 install opentelemetry-instrumentation-flask
 
+pip3 install opentelemetry-distro[otlp]>=0.24b0 \
+            opentelemetry-sdk-extension-aws~=2.0 \
+            opentelemetry-propagator-aws-xray~=1.0
 
 opentelemetry-bootstrap -a install
 
+export OTEL_EXPORTER_OTLP_ENDPOINT=localhost:4317 \
+export OTEL_PROPAGATORS=xray \
+export OTEL_PYTHON_ID_GENERATOR=xray \
+
 opentelemetry-instrument \
-    --traces_exporter console,otlp \
-    --metrics_exporter console \
     --service_name myServiceCats \
-    --exporter_otlp_endpoint 0.0.0.0:4317 \
     python3 app.py
 
 

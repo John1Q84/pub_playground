@@ -9,11 +9,7 @@ import random
 # OTLP tracing
 from opentelemetry import trace
 from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry.sdk.trace.export import (
-    BatchSpanProcessor,
-    ConsoleSpanExporter,
-)
-
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from opentelemetry.sdk.resources import SERVICE_NAME, Resource, get_aggregated_resources
 
 # Exporter
@@ -27,7 +23,9 @@ from opentelemetry.propagators.aws import AwsXRayPropagator
 from opentelemetry.sdk.extension.aws.trace import AwsXRayIdGenerator
 
 # Resource detector
-from opentelemetry.sdk.extension.aws.resource.ec2 import AwsEc2ResourceDetector
+from opentelemetry.sdk.extension.aws.resource.ec2 import (
+    AwsEc2ResourceDetector,
+)
 
 # Setup AWS X-ray propagator
 set_global_textmap(AwsXRayPropagator())
@@ -39,6 +37,18 @@ resource = get_aggregated_resources (
     ]
 )
 
+# Setup tracer provider with the X-Ray ID generator
+tracer_provider = TracerProvider(resource=resource, id_generator=AwsXRayIdGenerator())
+processor = BatchSpanProcessor(OTLPSpanExporter())
+tracer_provider.add_span_processor(processor)
+
+# Sets the global default tracer provider
+trace.set_tracer_provider(tracer_provider)
+
+# Creates a tracer from the global tracer provider
+tracer = trace.get_tracer(__name__)
+
+
 # Instrumentation
 from opentelemetry.instrumentation.botocore import BotocoreInstrumentor
 from opentelemetry.instrumentation.flask import FlaskInstrumentor
@@ -47,18 +57,6 @@ from opentelemetry.instrumentation.flask import FlaskInstrumentor
 # Instrumentation
 BotocoreInstrumentor().instrument()
 
-
-
-# Setup tracer provider with the X-Ray ID generator
-tracer_provider = TracerProvider(resource=resource, id_generator=AwsXRayIdGenerator())
-processor = BatchSpanProcessor(OTLPSpanExporter())
-provider.add_span_processor(processor)
-
-# Sets the global default tracer provider
-trace.set_tracer_provider(tracer_provider)
-
-# Creates a tracer from the global tracer provider
-tracer = trace.get_tracer(__name__)
 
 with open('configs.json', 'r') as f:    # config file loading
     configs = json.load(f)

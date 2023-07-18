@@ -69,13 +69,14 @@ get_tags() {
     echo 'Tag name "service_name" is,' && echo "$service_name"
 }
 
-# trace_init(){
-#     echo '>> init tracinge tools step'
-#     yum install go -y
-#     cd $HOME_DIR
-#     git clone https://github.com/aws-observability/aws-otel-collector.git ./adot
-#     cd adot && make package-rpm
-# }
+install_otlp_collector(){
+    sudo yum -y install wget systemctl
+    wget https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v0.81.0/otelcol_0.81.0_linux_386.rpm
+    sudo rpm -ivh otelcol_0.81.0_linux_386.rpm
+    sudo systemctl restart otelcol --config=$HOME_DIR/builders_pkg/python_app/cats/adot/adot-config.conf
+}
+
+
 
 git_init(){
     echo '>> git init step'

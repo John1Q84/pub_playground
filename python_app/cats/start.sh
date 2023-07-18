@@ -29,13 +29,13 @@ pip3 install -r requirements.txt
 # pip3 install opentelemetry-instrumentation-botocore
 # pip3 install opentelemetry-instrumentation-flask
 
-pip3 install opentelemetry-distro[otlp]>=0.24b0 \
-            opentelemetry-sdk-extension-aws~=2.0 \
-            opentelemetry-propagator-aws-xray~=1.0
+# pip3 install opentelemetry-distro[otlp]>=0.24b0 \
+#             opentelemetry-sdk-extension-aws~=2.0 \
+#             opentelemetry-propagator-aws-xray~=1.0
 
 opentelemetry-bootstrap -a install
 
-export OTEL_EXPORTER_OTLP_ENDPOINT=localhost:4317 \
+export OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317 \
 export OTEL_PROPAGATORS=xray \
 export OTEL_PYTHON_ID_GENERATOR=xray \
 

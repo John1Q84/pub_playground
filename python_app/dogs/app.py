@@ -19,7 +19,7 @@ def img_select(const):
     return random.choice(const)
 
 
-@app.route('/service')
+@app.route('/dog')
 def service():
     return render_template(
         'index.html',

@@ -20,7 +20,7 @@ def img_select(const):
     return random.choice(const) 
 
 
-@app.route('/service')
+@app.route('/cat')
 def servoce():
     return render_template(
         'index.html',

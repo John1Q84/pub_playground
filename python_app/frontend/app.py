@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # testing code
 from flask import Flask, render_template, current_app, redirect, url_for, Response, request, abort, g as app_ctx
-#from flask_restx import Api, Resource
+from time import strftime
 
 import json, datetime, requests, time, logging, os
 
@@ -13,7 +13,7 @@ if not os.path.isdir('logs'):
 logging.getLogger('werkzeug').disabled = True
 
 # log location, log level setting
-logging.basicConfig(filename = "logs/frontend.log", level = logging.DEBUG)
+logging.basicConfig(filename = "logs/frontend.log", level = logging.INFO)
 
 with open('configs.json', 'r') as f:    # config file loading
     configs = json.load(f)
@@ -35,10 +35,11 @@ def logging_before():
 
 @app.after_request
 def logging_after(response):
+    timestamp = strftime('[%Y-%b-%d %H:%M]')
     global ELAPSED_TIME
     elapsed_time = time.perf_counter() - app_ctx.start_time
     ELAPSED_TIME = int(elapsed_time * 1000)
-    current_app.logger.info('%s ms %s %s %s', ELAPSED_TIME, request.method, request.path, response.status )
+    current_app.logger.info('%s %s ms %s %s %s %s', timestamp ELAPSED_TIME, request.method, request.remote_addr, request.path, response.status )
     return response
 
 

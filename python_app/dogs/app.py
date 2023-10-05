@@ -1,54 +1,71 @@
 #!/usr/bin/python3
 # testing code
-from flask import Flask, render_template, redirect, url_for
-from flask_restx import Api, Resource
+from flask import Flask, render_template, request, current_app, g as app_ctx
+from flask_restx import Resource
 
-import json
-import random
+import json, random, logging, os, time
+import boto3
+from botocore.exceptions import ClientError
+from time import strftime
+
+# logging path setting
+if not os.path.isdir('logs'):
+  os.mkdir('logs')
+
+# default werkzeug logger diable
+logging.getLogger('werkzeug').disabled = True
+
+logger = logging.getLogger('myLogger')
+# log location, log level setting
+logging.basicConfig(filename = "logs/backend-dog.log", level = logging.INFO)
+
 
 with open('configs.json', 'r') as f:    # config file loading
     configs = json.load(f)
+    region = configs['INFO']['REGION']
+    logger.info(region)
+
+# Get the dynamodb resource
+dynamodb = boto3.resource('dynamodb', region_name=region)
+table = dynamodb.Table('lab1-table')
+
+const = ['201','202','203','204','205']
+def get_id(const):
+    return random.choice(const)
+
+def get_url():
+    id = get_id(const)
+    time.sleep(3)
+    response = table.get_item(
+        Key={'id': str(id)}        
+    )
+    rtn_url = response['Item']['url']
+    return rtn_url
 
 app = Flask (__name__)
-api = Api(app)
-const = ['_1.jpeg','_2.jpeg','_3.jpeg','_4.jpeg','_5.jpeg']
-# @app.route('/demo')
-# def hello_world():
-#    return 'Hello World!'
-def img_select(const):
-    return random.choice(const)
+
+@app.before_request
+def logging_before():
+    app_ctx.start_time = time.perf_counter()
+
+@app.after_request
+def logging_after(response):
+    global ELAPSED_TIME
+    timestamp = strftime('[%Y-%b-%d %H:%M]')
+    elapsed_time = time.perf_counter() - app_ctx.start_time
+    ELAPSED_TIME = int(elapsed_time * 1000)
+    current_app.logger.info('%s %s ms %s %s %s %s', timestamp ELAPSED_TIME, request.method, request.remote_addr, request.path, response.status )
+    return response
 
 
 @app.route('/dog')
 def service():
+    url = get_url()
     return render_template(
         'index.html',
-        title = 'Dogs are cool',
-        #backend_url = 'http://localhost:8080',
-        image_url = 'https://raw.githubusercontent.com/John1Q84/pub_playground/main',
-        image_file='images/dogs/' + img_select(const)
+        title = 'It is what happyness look like',
+        image_url = url
     )
-
-@app.route('/kr/service')
-def kr_service():
-    return render_template(
-        'index.html',
-        title = '<KR> Dogs are cool',
-        #backend_url = 'http://localhost:8080',
-        image_url = 'https://raw.githubusercontent.com/John1Q84/pub_playground/main',
-        image_file='images/dogs/' + img_select(const)
-    )
-
-@app.route('/us/service')
-def us_service():
-    return render_template(
-        'index.html',
-        title = '<US> Dogs are cool',
-        #backend_url = 'http://localhost:8080',
-        image_url = 'https://raw.githubusercontent.com/John1Q84/pub_playground/main',
-        image_file='images/dogs/' + img_select(const)
-    )
-
 
 if __name__ == "__main__":
     app.run(debug=False, host='0.0.0.0', port=80)

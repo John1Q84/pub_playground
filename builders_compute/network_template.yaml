@@ -82,7 +82,8 @@ Resources:
   PrivateSubnet1:
     DependsOn: AttachGateway
     Properties:
-      AvailabilityZone: 'ap-northeast-2a'   ## using AZ a and c only, because, AZ b does not support t type instance
+      #AvailabilityZone: 'ap-northeast-2a'   ## using AZ a and c only, because, AZ b does not support t type instance
+      AvailabilityZone: 'eu-west-1a'
         # Fn::Select:
         # - '0'
         # - {'Fn::GetAZs': ''}
@@ -101,7 +102,7 @@ Resources:
   PrivateSubnet2:
     DependsOn: AttachGateway
     Properties:
-      AvailabilityZone: 'ap-northeast-2c'
+      AvailabilityZone: 'eu-west-1c'
         # Fn::Select:
         # - '1'
         # - {'Fn::GetAZs': ''}
@@ -134,7 +135,7 @@ Resources:
   PublicSubnet1:
     DependsOn: AttachGateway
     Properties:
-      AvailabilityZone: 'ap-northeast-2a' 
+      AvailabilityZone: 'eu-west-1a' 
         # Fn::Select:
         # - '0'
         # - {'Fn::GetAZs': ''}
@@ -153,7 +154,7 @@ Resources:
   PublicSubnet2:
     DependsOn: AttachGateway
     Properties:
-      AvailabilityZone: 'ap-northeast-2c'
+      AvailabilityZone: 'eu-west-1c'
         # Fn::Select:
         # - '1'
         # - {'Fn::GetAZs': ''}
@@ -410,7 +411,8 @@ Resources:
             VolumeType: gp3
         IamInstanceProfile: 
           Name: !Ref EC2InstanceProfile 
-        ImageId: ami-033a6a056910d1137  # Amazon Linux2, Kernel 5, HVM, x86-64, latest at 2022 Mar.
+        #ImageId: ami-033a6a056910d1137  # Amazon Linux2, Kernel 5, HVM, x86-64, latest at 2022 Mar. for apne2
+        ImageId: ami-07be51e3c6d5f61d2 # for euw1
         InstanceType: t3.micro
         SecurityGroupIds:
         - !Ref FrontEndSecurityGroup 
@@ -542,7 +544,8 @@ Resources:
             VolumeType: gp3
         IamInstanceProfile: 
           Name: !Ref EC2InstanceProfile 
-        ImageId: ami-033a6a056910d1137 
+        #ImageId: ami-033a6a056910d1137  # apne2 region
+        ImageId: ami-07be51e3c6d5f61d2   # euw1 region
         InstanceType: t3.micro
         SecurityGroupIds:
         - !Ref BackEndSecurityGroup 
@@ -674,7 +677,8 @@ Resources:
             VolumeType: gp3
         IamInstanceProfile: 
           Name: !Ref EC2InstanceProfile 
-        ImageId: ami-033a6a056910d1137 
+        #ImageId: ami-033a6a056910d1137 #apne2 
+        ImageId: ami-07be51e3c6d5f61d2  #euw1
         InstanceType: t3.micro
         SecurityGroupIds:
         - !Ref BackEndSecurityGroup 
@@ -873,11 +877,11 @@ Resources:
     DependsOn: VPC
     Properties:
       HostedZoneConfig:
-        Comment: 'Builders internal hosted zone'
+        Comment: 'Builders EU internal hosted zone'
       Name: 'mydomain.int'
       VPCs:
         - VPCId: !Ref VPC
-          VPCRegion: ap-northeast-2
+          VPCRegion: eu-west-1
 
   ServiceDNSRecord:
     Type: AWS::Route53::RecordSetGroup

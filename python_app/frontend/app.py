@@ -16,16 +16,7 @@ SITE_NAME = 'http://service.mydomain.int/'
 # @app.route('/demo')
 # def hello_world():
 #    return 'Hello World!'
-# @app.route('/', defaults={'path': '/index'})
-@app.route('/')
-def default():
-    d = datetime.datetime.now()
-    return render_template(
-        'index.html',
-        title = 'AWSome Demo Day!',
-        time_now = d.strftime("%Y. %m. %d %A, %p %I:%m:%S"),
-        region = configs['INFO']['REGION']
-    )
+@app.route('/', defaults={'path': '/index'})
 
 @app.route('/index')
 def index():

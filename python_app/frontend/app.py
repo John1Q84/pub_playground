@@ -16,7 +16,7 @@ SITE_NAME = 'http://service.mydomain.int/'
 # @app.route('/demo')
 # def hello_world():
 #    return 'Hello World!'
-
+# @app.route('/', defaults={'path': '/index'})
 @app.route('/')
 def default():
     d = datetime.datetime.now()

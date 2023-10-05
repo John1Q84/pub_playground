@@ -1,15 +1,28 @@
 #!/usr/bin/python3
 # testing code
-import json, datetime, requests, os, time
-from flask import Flask, render_template, current_app, Response, request, abort, g as app_ctx
-from flask_restx import Api, Resource
+from flask import Flask, render_template, current_app, redirect, url_for, Response, request, abort, g as app_ctx
+#from flask_restx import Api, Resource
+
+import json, datetime, requests, time, logging, os
+
+# logging path setting
+if not os.path.isdir('logs'):
+  os.mkdir('logs')
+
+# default werkzeug logger diable
+logging.getLogger('werkzeug').disabled = True
+
+# log location, log level setting
+logging.basicConfig(filename = "logs/frontend.log", level = logging.DEBUG)
 
 with open('configs.json', 'r') as f:    # config file loading
     configs = json.load(f)
 
 app = Flask (__name__)
-api = Api(app)
-SITE_NAME = 'http://service.mydomain.int/'
+#api = Api(app)
+CAT_SITE_NAME = 'http://cat-service.mydomain.int/'
+DOG_SITE_NAME = 'http://dog-service.mydomain.int/'
+ELAPSED_TIME = 0
 #SITE_NAME = 'http://localhost:8080/'   # for local test
 
 # @app.route('/demo')
@@ -22,9 +35,10 @@ def logging_before():
 
 @app.after_request
 def logging_after(response):
+    global ELAPSED_TIME
     elapsed_time = time.perf_counter() - app_ctx.start_time
-    time_in_ms = int(elapsed_time * 1000)
-    current_app.logger.info('%s %s %s %s ms', request.method, request.path, requests.status_codes, time_in_ms )
+    ELAPSED_TIME = int(elapsed_time * 1000)
+    current_app.logger.info('%s ms %s %s %s', ELAPSED_TIME, request.method, request.path, response.status )
     return response
 
 
@@ -36,7 +50,9 @@ def page_not_found(error):
         title = 'Sorry, page not found..',
     ), 404
 
-@app.route('/', defaults={'path': '/index'})
+@app.route('/')
+def default():
+    return redirect(url_for('index'))
 
 @app.route('/index')
 def index():
@@ -51,20 +67,23 @@ def index():
 
 @app.route('/<path:path>',methods=['GET'])
 def proxy(path):
-    global SITE_NAME
+    global CAT_SITE_NAME
+    global DOG_SITE_NAME
     if path == 'cat':
-        SITE_NAME='cat-'+SITE_NAME
-        app.logger.
+        if request.method == 'GET':
+            resp = requests.get(f'{CAT_SITE_NAME}{path}')
+            response = Response(resp.text, resp.status_code)
+        else:
+            abort(403)
     elif path == 'dog':
-        SITE_NAME='dog='+SITE_NAME
+        if request.method == 'GET':
+            resp = requests.get(f'{DOG_SITE_NAME}{path}')
+            response = Response(resp.text, resp.status_code)
+        else:
+            abort(403)
     else:
-        app.logger()
+        app.logger.error('Invalide page request')
         abort(404)
-    if request.method == 'GET':
-        resp = requests.get(f'{SITE_NAME}{path}')
-        response = Response(resp.text, resp.status_code)
-    else:
-        abort(403)
     return response
 
 

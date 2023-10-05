@@ -39,7 +39,7 @@ def logging_after(response):
     global ELAPSED_TIME
     elapsed_time = time.perf_counter() - app_ctx.start_time
     ELAPSED_TIME = int(elapsed_time * 1000)
-    current_app.logger.info('%s %s ms %s %s %s %s', timestamp ELAPSED_TIME, request.method, request.remote_addr, request.path, response.status )
+    current_app.logger.info('%s %s ms %s %s %s %s', timestamp, ELAPSED_TIME, request.method, request.remote_addr, request.path, response.status )
     return response
 
 

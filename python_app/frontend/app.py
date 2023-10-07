@@ -63,7 +63,7 @@ def index():
         'index.html',        
         time_now = d.strftime("%Y. %m. %d %A, %p %I:%m:%S"),
         region = region,
-        title = 'Hands-On at ' + region,
+        title = 'Hands-On at ' + region
     )
 
 

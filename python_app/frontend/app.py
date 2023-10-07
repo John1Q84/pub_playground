@@ -58,11 +58,12 @@ def default():
 @app.route('/index')
 def index():
     d = datetime.datetime.now()
+    region = configs['INFO']['REGION'],
     return render_template(
-        'index.html',
-        title = 'AWSome Demo Day!',
+        'index.html',        
         time_now = d.strftime("%Y. %m. %d %A, %p %I:%m:%S"),
-        region = configs['INFO']['REGION']
+        region = region,
+        title = 'Hands-On at ' + region,
     )
 
 

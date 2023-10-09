@@ -63,6 +63,7 @@ def service():
     return render_template(
         'index.html',
         title = 'I love cats',
+        elapsed_time = ELAPSED_TIME,
         image_url = url
     )
 

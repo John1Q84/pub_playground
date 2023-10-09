@@ -64,6 +64,7 @@ def service():
     return render_template(
         'index.html',
         title = 'It is what happyness look like',
+        elapsed_time = ELAPSED_TIME,
         image_url = url
     )
 

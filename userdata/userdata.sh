@@ -34,7 +34,7 @@ main() {
     while true; do
         get_tags &&
         git_init &&
-	config_set &&
+	    config_set &&
         make_service &&
         break
     done

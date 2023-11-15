@@ -1,0 +1,94 @@
+{
+    "lab1-table":[
+        {
+            "PutRequest": {
+                "Item": {
+                    "id": {"S": "101"},
+                    "pettype": {"S": "cat"},
+                    "url": {"S": "https://raw.githubusercontent.com/John1Q84/pub_playground/main/static/images/cats/1.jpeg"}
+                }
+            }
+        },
+        {
+            "PutRequest": {
+                "Item": {
+                    "id": {"S": "102"},
+                    "pettype": {"S": "cat"},
+                    "url": {"S": "https://raw.githubusercontent.com/John1Q84/pub_playground/main/static/images/cats/2.jpeg"}
+                }
+            }
+        },
+        {
+            "PutRequest": {
+                "Item": {
+                    "id": {"S": "103"},
+                    "pettype": {"S": "cat"},
+                    "url": {"S": "https://raw.githubusercontent.com/John1Q84/pub_playground/main/static/images/cats/3.jpeg"}
+                }
+            }
+        },
+        {
+            "PutRequest": {
+                "Item": {
+                    "id": {"S": "104"},
+                    "pettype": {"S": "cat"},
+                    "url": {"S": "https://raw.githubusercontent.com/John1Q84/pub_playground/main/static/images/cats/4.jpeg"}
+                }
+            }
+        },
+        {
+            "PutRequest": {
+                "Item": {
+                    "id": {"S": "105"},
+                    "pettype": {"S": "cat"},
+                    "url": {"S": "https://raw.githubusercontent.com/John1Q84/pub_playground/main/static/images/cats/5.jpeg"}
+                }
+            }
+        },
+        {
+            "PutRequest": {
+                "Item": {
+                    "id": {"S": "201"},
+                    "pettype": {"S": "dog"},
+                    "url": {"S": "https://raw.githubusercontent.com/John1Q84/pub_playground/main/static/images/dogs/_1.jpeg"}
+                }
+            }
+        },
+        {
+            "PutRequest": {
+                "Item": {
+                    "id": {"S": "202"},
+                    "pettype": {"S": "dog"},
+                    "url": {"S": "https://raw.githubusercontent.com/John1Q84/pub_playground/main/static/images/dogs/_2.jpeg"}
+                }
+            }
+        },
+        {
+            "PutRequest": {
+                "Item": {
+                    "id": {"S": "203"},
+                    "pettype": {"S": "dog"},
+                    "url": {"S": "https://raw.githubusercontent.com/John1Q84/pub_playground/main/static/images/dogs/_3.jpeg"}
+                }
+            }
+        },
+        {
+            "PutRequest": {
+                "Item": {
+                    "id": {"S": "204"},
+                    "pettype": {"S": "dog"},
+                    "url": {"S": "https://raw.githubusercontent.com/John1Q84/pub_playground/main/static/images/dogs/_4.jpeg"}
+                }
+            }
+        },
+        {
+            "PutRequest": {
+                "Item": {
+                    "id": {"S": "205"},
+                    "pettype": {"S": "dog"},
+                    "url": {"S": "https://raw.githubusercontent.com/John1Q84/pub_playground/main/static/images/dogs/_5.jpeg"}
+                }
+            }
+        }
+    ]
+}

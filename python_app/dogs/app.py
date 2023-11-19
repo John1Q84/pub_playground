@@ -3,7 +3,7 @@
 from flask import Flask, render_template, request, current_app, g as app_ctx
 from flask_restx import Resource
 
-import json, random, logging, os, time
+import json, random, logging, os, time, random
 import boto3
 from botocore.exceptions import ClientError
 from time import strftime
@@ -35,7 +35,8 @@ def get_id(const):
 
 def get_url():
     id = get_id(const)
-    time.sleep(3)
+    if random.randint(0, 10) > 6:  ## Generate hardcorded 3 sec delay
+        time.sleep(3)
     response = table.get_item(
         Key={'id': str(id)}        
     )
